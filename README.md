@@ -1,9 +1,10 @@
 # elfcallgraph
 A script could generate callgraph from elf file
 
-This tool depands on the arm-none-eabi-objdump
-
 # Depandency
+
+## arm gcc
+- arm-none-eabi-objdump
 
 ## python dependency
 - chardet (used to identify the text file encode)
