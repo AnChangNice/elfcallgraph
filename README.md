@@ -15,6 +15,12 @@ This tool depands on the arm-none-eabi-objdump
 Run below command to generate callgraph from a elf:
 - python .\callgraph.py .\debug.elf
 
+Run below command to generate callgraph from a elf with main as start:
+- python .\callgraph.py .\debug.elf -c main
+
+Run below command to generate callgraph from a elf with *main* as start and skip *HAL_RCC_OscConfig*:
+- python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+
 Run below command to get help:
 - python .\callgraph.py -h
 
@@ -22,5 +28,6 @@ Run below command to get help:
 - debug.s (disassembler file)
 - debug.pu (PlantUML Mindmap file)
 
-## Use VS Code PlantUML extension to review the callgraph (PlantUML Mindmap file)
+## Use VS Code PlantUML extension to review the callgraph (PlantUML Mindmap file "debug.pu")
+A callgraph with *main* as start and skip *HAL_RCC_OscConfig*:
 ![callgraph](./image/debug.svg)

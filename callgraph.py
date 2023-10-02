@@ -201,7 +201,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', type=str, help="Output callgraph file path")
     parser.add_argument('-d', '--deepth', type=int, default=10, help="Call deepth for callgraph, default is 10, optional!")
     parser.add_argument('-c', '--call_roots', type=str, help="Specify the call roots you want generate, default will generate all. Optional! eg: -c func1,func2,func3")
-    parser.add_argument('-f', '--filter', type=str, help="Skip the call roots you want care, default will generate all. Optional! eg: -f func1,func2,func3")
+    parser.add_argument('-f', '--filter', type=str, help="Skip the calls you don't need, default won't skip. Optional! eg: -f func1,func2,func3")
     parser.add_argument('-i', '--info', type=int, default=0, help="Whether show the debug info, 1 to open")
     args = parser.parse_args()
 

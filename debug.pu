@@ -1,0 +1,37 @@
+@startmindmap
+* main
+** HAL_Init
+*** HAL_NVIC_SetPriorityGrouping
+*** HAL_InitTick
+**** HAL_SYSTICK_Config
+**** HAL_NVIC_SetPriority
+***** NVIC_EncodePriority
+***** __NVIC_SetPriority
+*** HAL_MspInit
+** SystemClock_Config
+*** memset
+*** HAL_RCC_OscConfig
+*** HAL_RCC_ClockConfig
+**** HAL_GetTick
+**** HAL_GetTick
+**** HAL_RCC_GetSysClockFreq
+**** HAL_InitTick
+***** HAL_SYSTICK_Config
+***** HAL_NVIC_SetPriority
+****** NVIC_EncodePriority
+****** __NVIC_SetPriority
+*** Error_Handler
+*** Error_Handler
+** MX_GPIO_Init
+*** HAL_GPIO_WritePin
+*** HAL_GPIO_Init
+** my_function
+*** HAL_GPIO_WritePin
+*** HAL_Delay
+**** HAL_GetTick
+**** HAL_GetTick
+*** HAL_GPIO_WritePin
+*** HAL_Delay
+**** HAL_GetTick
+**** HAL_GetTick
+@endmindmap
