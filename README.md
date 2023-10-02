@@ -1,9 +1,26 @@
 # elfcallgraph
-A script could generate callgraph from elf
+A script could generate callgraph from elf file
+
+This tool depands on the arm-none-eabi-objdump
+
+# Depandency
+
+## python dependency
+- chardet (used to identify the text file encode)
+
+## vs code extension dependency
+- PlantUML
+
 # how to use
-## run below cmd
-python .\callgraph.py .\debug.elf
-## a debug.s and debug.pu file will be generated
-debug.s
-debug.pu
-## use VS Code PlantUML extension to review the callgraph
+Run below command to generate callgraph from a elf:
+- python .\callgraph.py .\debug.elf
+
+Run below command to get help:
+- python .\callgraph.py -h
+
+## generated files
+- debug.s (disassembler file)
+- debug.pu (PlantUML Mindmap file)
+
+## Use VS Code PlantUML extension to review the callgraph (PlantUML Mindmap file)
+![callgraph](./image/debug.svg)
