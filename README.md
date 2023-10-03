@@ -63,10 +63,18 @@ Run below command to get help:
 - debug.pu (PlantUML Mindmap file)
 
 ## Use VS Code PlantUML extension to review the callgraph (PlantUML Mindmap file "debug.pu")
+
+A callgraph with commands:
+- callgraph skip *HAL_RCC_OscConfig*
+```console
+python .\callgraph.py .\debug.elf -f HAL_RCC_OscConfig
+```
+![callgraph](./image/debug.svg)
+
 A callgraph with commands:
 - callgraph start at *main*
 - callgraph skip *HAL_RCC_OscConfig*
 ```console
 python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
 ```
-![callgraph](./image/debug.svg)
+![callgraph](./image/debug2.svg)
