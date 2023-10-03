@@ -6,21 +6,52 @@ A script could generate callgraph from elf file
 ## arm gcc
 - arm-none-eabi-objdump
 
-## python dependency
+## python
 - chardet (used to identify the text file encode)
 
-## vs code extension dependency
+## vs code extension
 - PlantUML
 
 # how to use
 Run below command to generate callgraph from a elf:
-- python .\callgraph.py .\debug.elf
 
-Run below command to generate callgraph from a elf with main as start:
-- python .\callgraph.py .\debug.elf -c main
+```console
+python .\callgraph.py .\debug.elf
+```
 
-Run below command to generate callgraph from a elf with *main* as start and skip *HAL_RCC_OscConfig*:
-- python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+Run below command to generate callgraph from a asm:
+
+```console
+python .\callgraph.py .\debug.s
+```
+
+Run below command to generate callgraph from a elf, with:
+
+- callgraph start at *main*
+```console
+python .\callgraph.py .\debug.elf -c main
+```
+
+- callgraph start at *main*
+- callgraph skip *HAL_RCC_OscConfig*
+```console
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+```
+
+- callgraph start at *main*
+- callgraph skip *HAL_RCC_OscConfig*
+- callgraph deepth 4
+```console
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+```
+
+- callgraph start at *main*
+- callgraph skip *HAL_RCC_OscConfig*
+- callgraph deepth 4
+- callgraph output *callgraph.pu*
+```console
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig -o callgraph.pu
+```
 
 Run below command to get help:
 - python .\callgraph.py -h
@@ -30,5 +61,10 @@ Run below command to get help:
 - debug.pu (PlantUML Mindmap file)
 
 ## Use VS Code PlantUML extension to review the callgraph (PlantUML Mindmap file "debug.pu")
-A callgraph with *main* as start and skip *HAL_RCC_OscConfig*:
+A callgraph with commands:
+- callgraph start at *main*
+- callgraph skip *HAL_RCC_OscConfig*
+```console
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+```
 ![callgraph](./image/debug.svg)
