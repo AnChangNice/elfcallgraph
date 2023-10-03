@@ -42,7 +42,7 @@ python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
 - callgraph skip *HAL_RCC_OscConfig*
 - callgraph deepth 4
 ```console
-python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig -d 4
 ```
 
 - callgraph start at *main*
@@ -50,7 +50,7 @@ python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig
 - callgraph deepth 4
 - callgraph output *callgraph.pu*
 ```console
-python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig -o callgraph.pu
+python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig -d 4 -o callgraph.pu
 ```
 
 Run below command to get help:
