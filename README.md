@@ -56,6 +56,8 @@ python .\callgraph.py .\debug.elf -c main -f HAL_RCC_OscConfig -d 4 -o callgraph
 Run below command to get help:
 - python .\callgraph.py -h
 
+**Recursive**: There maybe have a chance the callgraph have recursive, and you could use *-f* to skip the recursive function to walkaround the case.
+
 ## generated files
 - debug.s (disassembler file)
 - debug.pu (PlantUML Mindmap file)
