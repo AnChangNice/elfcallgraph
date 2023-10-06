@@ -27,6 +27,10 @@ class Callgraph:
             index += 1
         logging.debug("Callgraph get .text section funcs complete!")
 
+        self.output_funcs_name = {}
+        for func in self.text_funcs_name:
+            self._output_func_name_add(func)
+
         logging.debug("Callgraph get all func calls:")
         self.func_calls = self._get_all_func_calls()
         index = 1
@@ -36,8 +40,9 @@ class Callgraph:
             index += 1
         
         if filter != []:
-            for func in filter:
-                if func in self.func_calls:
+            for func in self.func_calls.keys():
+                addr, name = func.split(',')
+                if name in filter:
                     self.func_calls[func] = []
         logging.debug("Callgraph get all func calls complete!")
 
@@ -52,11 +57,17 @@ class Callgraph:
         if call_roots != []:
             logging.debug("Callgraph call root overwrite:")
             self.call_roots = []
+            func_dict = {func.split(',')[1]: True for func in self.text_funcs_name}
             for call in call_roots:
-                if call in self.text_funcs_name:
-                    self.call_roots.append(call)
-                else:
+                if call not in func_dict:
                     logging.debug("Call: %s not in func list!" % (call))
+                    continue
+
+                for func in self.text_funcs_name:
+                    addr, name = func.split(',')
+                    if call == name:
+                        self.call_roots.append(func)
+
             if self.call_roots == []:
                 logging.debug("Callgraph call root could not be null!")
                 return
@@ -96,22 +107,40 @@ class Callgraph:
     def _get_all_text_func_name(self):
         text_content = self.text_section_content
 
-        func_re = r"\w+\s<(\w+)>:"
+        # we need added address info to distinguish different func with same name as below:
+        # 08000210 <my_function>:
+        # 080002bc <my_function>:
+        # In order to cover this case, a function name rule "address,name" will be used.
+        func_re = r"([0-9A-Fa-f]+)\s<(\w+)>:"
         funcs_name = re.findall(func_re, text_content, re.M | re.S)
 
-        return funcs_name
+        addr_funcs_name = []
+        for addr, name in funcs_name:
+            addr = int(addr, 16)
+            addr = "%x"%(addr)
+            addr_funcs_name.append("%s,%s"%(addr,name))
+
+        return addr_funcs_name
     
     def _get_func_name_from_content(self, content):
 
-        func_re = r"\w+\s<(\w+)>:"
+        func_re = r"([0-9A-Fa-f]+)\s<(\w+)>:"
         funcs_name = re.findall(func_re, content, re.M | re.S)
 
-        return funcs_name[0]
+        addr = int(funcs_name[0][0], 16)
+        addr = "%x" % (addr)
+        func = funcs_name[0][1]
+
+        addr_func_name = "%s,%s" % (addr, func)
+
+        return addr_func_name
     
     def _get_text_func_content_by_name(self, name):
         text_content = self.text_section_content
 
-        func_re = r"\w+\s<%s>:.*?\\r\\n\\r\\n" % (name)
+        func_addr, func_name = name.split(',')
+
+        func_re = r"%s\s<%s>:.*?\\r\\n\\r\\n" % (func_addr, func_name)
         func_content = re.findall(func_re, text_content, re.M | re.S)
 
         return func_content[0]
@@ -119,19 +148,26 @@ class Callgraph:
     def _get_func_calls_by_name(self, name):
         func_content = self._get_text_func_content_by_name(name)
 
-        call_re = r"<(\w+)>\\r\\n"
+        call_re = r"([0-9A-Fa-f]+)\s<(\w+)>\\r\\n"
         calls = re.findall(call_re, func_content, re.M | re.S)
 
-        return calls
+        addr_func_calls = []
+        for addr, fname in calls:
+            addr = int(addr, 16)
+            addr = "%x" % (addr)
+            addr_func_calls.append("%s,%s"%(addr, fname))
+
+        return addr_func_calls
     
     def _get_func_calls(self, content):
-        call_re = r"<(\w+)>\\r\\n"
+        call_re = r"([0-9A-Fa-f]+)\s<(\w+)>\\r\\n"
         all_calls = re.findall(call_re, content, re.M | re.S)
 
         calls = []
-        for call in all_calls:
-            if call != "UNPREDICTABLE":
-                calls.append(call)
+        for addr, name in all_calls:
+            addr = int(addr, 16)
+            addr = "%x" % (addr)
+            calls.append("%s,%s"%(addr, name))
 
         return calls
 
@@ -181,7 +217,7 @@ class Callgraph:
         for sub_func in self.func_calls[func]:
             if level > 50:
                 logging.debug("callgraph %d %s" % (level+1, sub_func))
-            self.queue.append((level+1, sub_func))
+            self.queue.append((level+1, self._output_func_name(sub_func)))
             self._dfs_build(level+1, sub_func)
 
         return
@@ -190,8 +226,24 @@ class Callgraph:
         # here we use a recurisve to create a callgraph
         for root_func in self.call_roots:
             logging.debug("callgraph %d %s" % (1, root_func))
-            self.queue.append((1, root_func))
+            self.queue.append((1, self._output_func_name(root_func)))
             self._dfs_build(1, root_func)
+
+    # in the class, we use the addr,name to distinguish funcs.
+    # but this is not user friendly, so we use name#index to represent different funcs.
+    def _output_func_name_add(self, internal_name):
+        addr, name = internal_name.split(',')
+
+        value_list = [self.output_funcs_name[key] for key in self.output_funcs_name.keys()]
+
+        count = value_list.count(name)
+        if count == 0:
+            self.output_funcs_name[internal_name] = name
+        else:
+            self.output_funcs_name[internal_name] = name + '#' + str(count+1)
+
+    def _output_func_name(self, internal_name):
+        return self.output_funcs_name[internal_name]
 
 if __name__ == "__main__":
 
