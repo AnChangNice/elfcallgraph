@@ -8,7 +8,7 @@ import logging
 
 class Callgraph:
 
-    def __init__(self, path, deepth, call_roots=[], filter=[]):
+    def __init__(self, path, deepth, remove_duplicate, call_roots=[], filter=[]):
 
         self.deepth = deepth
 
@@ -44,6 +44,15 @@ class Callgraph:
                 addr, name = func.split(',')
                 if name in filter:
                     self.func_calls[func] = []
+
+        if remove_duplicate:
+            for func in self.func_calls.keys():
+                new_calls = []
+                for call in self.func_calls[func]:
+                    if call not in new_calls:
+                        new_calls.append(call)
+
+                self.func_calls[func] = new_calls
         logging.debug("Callgraph get all func calls complete!")
 
         logging.debug("Callgraph get call root:")
@@ -262,6 +271,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--call_roots', type=str, help="Specify the call roots you want generate, default will generate all. Optional! eg: -c func1,func2,func3")
     parser.add_argument('-f', '--filter', type=str, help="Skip the calls you don't need, default won't skip. Optional! eg: -f func1,func2,func3")
     parser.add_argument('-s', '--code_section', type=str, default=".text", help="Specify the code section name if it is not default \".text\". Optional!")
+    parser.add_argument('-r', '--remove_duplicate', type=int, default=0, help="Remove duplicate calls from callgraph, 1 to open. Optional!")
     parser.add_argument('-i', '--info', type=int, default=0, help="Whether show the debug info, 1 to open")
     args = parser.parse_args()
 
@@ -296,13 +306,15 @@ if __name__ == "__main__":
 
     code_section_name = args.code_section
 
+    remove_duplicate = args.remove_duplicate
+
     if elf_path != None:
         print("Generate Disassembly:")
         os.system("arm-none-eabi-objdump -D -z -j %s %s > %s" % (code_section_name, elf_path, asm_path))
         print("Generate Disassembly Complete!")
 
     print("Generate Callgraph:")
-    callgraph = Callgraph(asm_path, args.deepth, call_roots, filter)
+    callgraph = Callgraph(asm_path, args.deepth, remove_duplicate, call_roots, filter)
     print("Generate Callgraph Complete!")
 
     # output the call graph as PlantUML Mindmap file
