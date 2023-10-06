@@ -31,6 +31,8 @@
 ******** NVIC_EncodePriority
 ******** __NVIC_SetPriority
 ****** HAL_MspInit
+******* my_function#3
+******** HAL_GPIO_WritePin
 ***** SystemClock_Config
 ****** memset
 ****** HAL_RCC_OscConfig

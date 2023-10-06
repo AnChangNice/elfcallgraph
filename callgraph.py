@@ -240,7 +240,14 @@ class Callgraph:
         if count == 0:
             self.output_funcs_name[internal_name] = name
         else:
-            self.output_funcs_name[internal_name] = name + '#' + str(count+1)
+            for i in range(2, len(value_list)):
+                name_index = name + '#' + str(i)
+                count = value_list.count(name_index)
+                if count != 0:
+                    continue
+
+                self.output_funcs_name[internal_name] = name_index
+                break
 
     def _output_func_name(self, internal_name):
         return self.output_funcs_name[internal_name]
